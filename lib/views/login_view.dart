@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:login_app/controller/login_controller.dart';
+import 'package:login_app/controller/service/bloc/student_bloc.dart';
 import 'package:login_app/theme/app_colors.dart';
+import 'package:login_app/views/signup_view.dart';
+import 'package:login_app/widget/custom_loading.dart';
 
 class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
-
+  LoginPage({super.key});
+  final LoginController _controller = LoginController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,11 +85,13 @@ class LoginPage extends StatelessWidget {
                 children: [
                   // Email TextField
                   TextFormField(
+                    controller: _controller.textFieldControllers[0],
                     textInputAction: TextInputAction.next,
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: AppColors.textFieldColor,
                       labelText: "Email",
+
                       border: OutlineInputBorder(
                         borderSide: BorderSide.none,
                         borderRadius: BorderRadius.circular(10),
@@ -95,6 +102,7 @@ class LoginPage extends StatelessWidget {
 
                   // Password TextField
                   TextFormField(
+                    controller: _controller.textFieldControllers[1],
                     obscureText: true,
                     textInputAction: TextInputAction.done,
                     decoration: InputDecoration(
@@ -121,7 +129,7 @@ class LoginPage extends StatelessWidget {
                         ),
                       ),
                       onPressed: () {
-                        Navigator.pushReplacementNamed(context, '/Home');
+                        _controller.login();
                       },
                       child: const Text(
                         "LOGIN",
@@ -138,9 +146,8 @@ class LoginPage extends StatelessWidget {
                       const Text("Don't have an account?"),
                       TextButton(
                         onPressed: () {
-                          Navigator.pushReplacementNamed(
-                            context,
-                            '/signup/Step 1',
+                          Navigator.of(context).push(
+                            MaterialPageRoute(builder: (context)=> SignupPage())
                           );
                         },
                         child: const Text(
@@ -156,6 +163,30 @@ class LoginPage extends StatelessWidget {
                 ],
               ),
             ),
+          ),
+          BlocConsumer<StudentBloc, StudentState>(
+            bloc: _controller.studentBloc,
+            builder: (context, state) {
+              switch (state.runtimeType) {
+                case StudentLoginLoadingState:
+                  {
+                    return Positioned(
+                      left: 0,
+                      right: 0,
+                      top: 0,
+                      bottom: 0,
+                      child: CustomLoading(),
+                    );
+                  }
+                default:
+                  {
+                    return Container();
+                  }
+              }
+            },
+            listener: (context, state) {
+              _controller.showLoginState(state, context);
+            },
           ),
         ],
       ),

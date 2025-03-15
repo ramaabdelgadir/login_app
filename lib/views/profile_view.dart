@@ -1,46 +1,119 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:login_app/controller/profile_controller.dart';
+import 'package:login_app/controller/service/bloc/student_bloc.dart';
+import 'package:login_app/controller/service/model/student_model.dart';
 import 'package:login_app/theme/app_colors.dart';
+import 'package:login_app/widget/custom_loading.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
-
+  ProfilePage({super.key, required this.studentData});
+  final StudentModel studentData;
   @override
   ProfilePageState createState() => ProfilePageState();
+  
 }
 
 class ProfilePageState extends State<ProfilePage> {
-  // Controllers for text fields
-  final TextEditingController _nameController = TextEditingController(
-    text: "Mohammed Shaker",
-  );
-  final TextEditingController _emailController = TextEditingController(
-    text: "20210777@stud.fci-cu.edu.eg",
-  );
-  final TextEditingController _studentIdController = TextEditingController(
-    text: "20210777",
-  );
-  final TextEditingController _passwordController = TextEditingController(
-    text: "mypassword123",
-  );
+ final ProfileController _controller = ProfileController();
 
-  bool _isPasswordVisible = false;
-  String? _selectedGender = "Male";
-  int? _selectedLevel = 2;
-  File? _image;
+  
+  void removeImage(){
+    setState(() {
+          _controller.image = null;
+          widget.studentData.profile_pic_path = null;
+          _controller.deleteImage = true;
+    });
+  }
 
-  Future<void> _pickImage() async {
+   Future<void> _PICKIMAGE(bool is_camera) async {
     final pickedFile = await ImagePicker().pickImage(
-      source: ImageSource.gallery,
+      source: is_camera ? ImageSource.camera : ImageSource.gallery,
+      maxWidth: 800, // adjust as needed
+      maxHeight: 800,
+      imageQuality: 80, // 0-100
+
     );
 
     if (pickedFile != null) {
       setState(() {
-        _image = File(pickedFile.path);
+      _controller.image = File(pickedFile.path);
+      widget.studentData.profile_pic_path= _controller.image!.path;
+      _controller.deleteImage=false;
+        
       });
+
     }
   }
+
+
+  void pickImage(BuildContext context) async {
+    showModalBottomSheet(
+      isDismissible: true,
+      useSafeArea: true,
+      context: context,
+      builder: (context) {
+        return Container(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                decoration: BoxDecoration(
+                  border: Border.all(width: 0.1),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(25),
+                    topRight: Radius.circular(25),
+                  ),
+                ),
+
+                child: ListTile(
+                  title: Text("Camera"),
+                  onTap: () {
+                    _PICKIMAGE(true);
+                        Navigator.pop(context);
+
+                  },
+                  trailing: Icon(Icons.camera),
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                decoration: BoxDecoration(border: Border.all(width: 0.1)),
+                child: ListTile(
+                  title: Text("Galary"),
+                  onTap: () {
+                    _PICKIMAGE(false);
+                      Navigator.pop(context);
+                  },
+                  trailing: Icon(Icons.image),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+
+  @override
+  void initState() {
+    setState(() {
+      
+    _controller.init(widget.studentData);
+    });
+    super.initState();
+  }
+  // Controllers for text fields
+  
+
+    
+  bool _isPasswordVisible = false;
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -104,23 +177,41 @@ class ProfilePageState extends State<ProfilePage> {
                     children: [
                       // User image
                       GestureDetector(
-                        onTap: _pickImage,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(50),
-                          child:
-                              _image != null
-                                  ? Image.file(
-                                    _image!,
-                                    height: 100,
-                                    width: 100,
-                                    fit: BoxFit.cover,
-                                  )
-                                  : Image.asset(
-                                    'assets/images/user.png',
-                                    height: 100,
-                                    width: 100,
-                                    fit: BoxFit.cover,
-                                  ),
+                        onTap:() {
+                           
+                              pickImage(context);
+                          },
+                        child: Stack(
+                          clipBehavior:Clip.none ,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(50),
+                              child:
+                                  _controller.image != null
+                                      ? Image.file(
+                                        _controller.image!,
+                                        height: 100,
+                                        width: 100,
+                                        fit: BoxFit.cover,
+                                      )
+                                      : Image.network(
+                                                 "http://192.168.1.6:5000/profile_pics/${widget.studentData.profile_pic_path ==null?"DEFAULT_PROFILE_IMAGE.png":widget.studentData!.profile_pic_path}",
+                                        height: 100,
+                                        width: 100,
+                                        fit: BoxFit.cover,
+                                      ),
+                            ),
+                           widget.studentData.profile_pic_path !=null? Positioned(
+                              right: -5,
+                              top: -5,
+                              child: IconButton(onPressed: (){
+                                removeImage();
+                              }, icon: Icon(Icons.highlight_remove_rounded,color: Colors.red,))
+                              ):Positioned(
+                              right: 0,
+                              top: 0,
+                              child: Icon(Icons.edit)),
+                          ]
                         ),
                       ),
                       const Text(
@@ -132,7 +223,7 @@ class ProfilePageState extends State<ProfilePage> {
 
                       // Name field
                       TextFormField(
-                        controller: _nameController,
+                        controller: _controller.nameController,
                         decoration: InputDecoration(
                           labelText: "Name",
                           filled: true,
@@ -147,7 +238,7 @@ class ProfilePageState extends State<ProfilePage> {
 
                       // Email field
                       TextFormField(
-                        controller: _emailController,
+                        controller: _controller.emailController,
                         decoration: InputDecoration(
                           labelText: "Email",
                           filled: true,
@@ -162,7 +253,7 @@ class ProfilePageState extends State<ProfilePage> {
 
                       // Student ID field
                       TextFormField(
-                        controller: _studentIdController,
+                        controller: _controller.studentIdController,
                         decoration: InputDecoration(
                           labelText: "Student ID",
                           filled: true,
@@ -177,10 +268,38 @@ class ProfilePageState extends State<ProfilePage> {
 
                       // Password field
                       TextFormField(
-                        controller: _passwordController,
+                        controller: _controller.passwordController,
                         obscureText: !_isPasswordVisible,
                         decoration: InputDecoration(
                           labelText: "Password",
+                          filled: true,
+                          fillColor: AppColors.textFieldColor,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide.none,
+                          ),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _isPasswordVisible
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _isPasswordVisible = !_isPasswordVisible;
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+
+                      // Password field
+                      TextFormField(
+                        controller: _controller.confirmPasswordController,
+                        obscureText: !_isPasswordVisible,
+                        decoration: InputDecoration(
+                          labelText: "Confirm Password",
                           filled: true,
                           fillColor: AppColors.textFieldColor,
                           border: OutlineInputBorder(
@@ -223,10 +342,10 @@ class ProfilePageState extends State<ProfilePage> {
                               children: [
                                 Radio<String>(
                                   value: "Male",
-                                  groupValue: _selectedGender,
+                                  groupValue: _controller.selectedGender,
                                   onChanged: (String? value) {
                                     setState(() {
-                                      _selectedGender = value;
+                                      _controller.selectedGender = value;
                                     });
                                   },
                                   activeColor: Colors.white,
@@ -240,10 +359,10 @@ class ProfilePageState extends State<ProfilePage> {
                                 ),
                                 Radio<String>(
                                   value: "Female",
-                                  groupValue: _selectedGender,
+                                  groupValue: _controller.selectedGender,
                                   onChanged: (String? value) {
                                     setState(() {
-                                      _selectedGender = value;
+                                      _controller.selectedGender = value;
                                     });
                                   },
                                   activeColor: Colors.white,
@@ -272,10 +391,10 @@ class ProfilePageState extends State<ProfilePage> {
                                   children: [
                                     Radio<int>(
                                       value: index + 1,
-                                      groupValue: _selectedLevel,
+                                      groupValue: _controller.selectedLevel,
                                       onChanged: (int? value) {
                                         setState(() {
-                                          _selectedLevel = value;
+                                         _controller.selectedLevel = value;
                                         });
                                       },
                                       activeColor: Colors.white,
@@ -302,8 +421,8 @@ class ProfilePageState extends State<ProfilePage> {
                               child: ElevatedButton(
                                 onPressed: () {
                                   setState(() {
-                                    _selectedGender = null;
-                                    _selectedLevel = null;
+                                    _controller.selectedGender = null;
+                                    _controller.selectedLevel = null;
                                   });
                                 },
                                 style: ElevatedButton.styleFrom(
@@ -326,26 +445,97 @@ class ProfilePageState extends State<ProfilePage> {
                       const SizedBox(height: 15),
 
                       // Save Changes button
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.pushReplacementNamed(context, '/Home');
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.mainColor,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                      Row(
+                        children: [
+                          Expanded(
+                            flex: 5,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                _controller.updateData();
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.mainColor,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              child: const Text(
+                                "Save Changes",
+                                style: TextStyle(fontSize: 16, color: Colors.white),
+                              ),
+                            ),
                           ),
-                        ),
-                        child: const Text(
-                          "Save Changes",
-                          style: TextStyle(fontSize: 16, color: Colors.white),
-                        ),
+                          SizedBox(width:10),
+                          Expanded(
+                            flex: 3,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                _controller.logout(context);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.redAccent,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              child: const Text(
+                                "Logout",
+                                style: TextStyle(fontSize: 16, color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: () {
+                                _controller.deleteAccount();
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              child: const Text(
+                                "Delete The Account",
+                                style: TextStyle(fontSize: 16, color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
                 ),
               ),
             ),
+          ),
+          BlocConsumer<StudentBloc, StudentState>(
+            bloc: _controller.studentBloc,
+            builder: (context, state) {
+              switch (state.runtimeType) {
+                case StudentUpdateDataLoadingState:
+                  {
+                    return Positioned(
+                      left: 0,
+                      right: 0,
+                      top: 0,
+                      bottom: 0,
+                      child: CustomLoading(),
+                    );
+                  }
+                default:
+                  {
+                    return Container();
+                  }
+              }
+            },
+            listener: (context, state) {
+              _controller.showUpdateDataState(state, context);
+            },
           ),
         ],
       ),
