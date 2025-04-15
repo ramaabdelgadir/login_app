@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:login_app/data/app_data.dart';
+import 'package:login_app/external/app_data.dart';
 
 class StudentRepo {
   static Future<Map<String, dynamic>> signup(

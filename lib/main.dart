@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:login_app/views/login_view.dart';
-import 'package:login_app/views/home_view.dart';
-import 'package:login_app/views/profile_view.dart';
-import 'package:login_app/views/signup_view.dart';
-import 'package:login_app/views/splash.dart';
+import 'package:login_app/user/views/login_view.dart';
+import 'package:login_app/main/view/home_view.dart';
+import 'package:login_app/user/views/profile_view.dart';
+import 'package:login_app/user/views/signup_view.dart';
+import 'package:login_app/user/views/splash.dart';
 
 void main() {
   runApp(const MyApp());

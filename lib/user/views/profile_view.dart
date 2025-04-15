@@ -2,12 +2,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:login_app/controller/profile_controller.dart';
-import 'package:login_app/controller/service/bloc/student_bloc.dart';
-import 'package:login_app/controller/service/model/student_model.dart';
-import 'package:login_app/theme/app_colors.dart';
-import 'package:login_app/widget/custom_loading.dart';
-import 'package:login_app/data/app_data.dart';
+import 'package:login_app/user/controller/profile_controller.dart';
+import 'package:login_app/user/controller/service/bloc/student_bloc.dart';
+import 'package:login_app/user/model/student_model.dart';
+import 'package:login_app/external/theme/app_colors.dart';
+import 'package:login_app/external/widget/custom_loading.dart';
+import 'package:login_app/external/app_data.dart';
 
 class ProfilePage extends StatefulWidget {
   ProfilePage({super.key, required this.studentData});

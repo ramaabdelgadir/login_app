@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
-import 'package:login_app/theme/app_colors.dart';
+import 'package:login_app/external/theme/app_colors.dart';
 
 class CustomLoading extends StatelessWidget {
   const CustomLoading({super.key});
