@@ -28,12 +28,8 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
       }
   }
 
-
-
-
   FutureOr<void> studentLoginEvent(StudentLoginEvent event, Emitter<StudentState> emit)async {
     emit(StudentLoginLoadingState());
-    
         final Map<String,dynamic> response= await StudentRepo.login(event.studentData);
     
     if (response['status']){
@@ -44,9 +40,6 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
       }
 
   }
-
-
-
 
   FutureOr<void> studentGetDataEvent(StudentGetDataEvent event, Emitter<StudentState> emit) async{
     emit(StudentGetStudentDataLoadingState());

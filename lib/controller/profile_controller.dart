@@ -50,22 +50,25 @@ class ProfileController {
     selectedLevel = studentData.level;
   }
 
-
-  void logout(BuildContext context)async{
+  void logout(BuildContext context) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove('token');
-    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=>LoginPage()),
-    (Route<dynamic> route) => false,);
-
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (context) => LoginPage()),
+      (Route<dynamic> route) => false,
+    );
   }
 
-  void deleteAccount(){
-
-  }
+  void deleteAccount() {}
 
   void updateData() {
     final Map<String, dynamic> data = {
-      'profile_pic_path': image?.path ==null?deleteImage?"DELETE":"#": image!.path  ,
+      'profile_pic_path':
+          image?.path == null
+              ? deleteImage
+                  ? "DELETE"
+                  : "#"
+              : image!.path,
       "name": nameController.text,
       "email": emailController.text,
       "password": passwordController.text,
@@ -91,7 +94,7 @@ class ProfileController {
             Overlay.of(context),
             CustomSnackBar.success(message: state.message),
           );
-          Navigator.pop(context,true);
+          Navigator.pop(context, true);
         }
       case StudentUpdateDataFailedState:
         {

@@ -14,127 +14,203 @@ class SignupPage extends StatefulWidget {
 
 class SignupPageState extends State<SignupPage> {
   final SignupController _controller = SignupController();
-  // String? _selectedGender;
-  // int? _selectedLevel;
+  final _formKeyPage1 = GlobalKey<FormState>();
+  final _formKeyPage2 = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     final List<Widget> subPages = [
-      Column(
-        children: [
-          const Text("Please fill out the following fields"),
-          const SizedBox(height: 15),
-          TextFormField(
-            controller: _controller.textFieldControllers[0],
-            textInputAction: TextInputAction.done,
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: AppColors.textFieldColor,
-              labelText: "Email",
-              border: OutlineInputBorder(
-                borderSide: BorderSide.none,
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          ),
-          const SizedBox(height: 10),
-          TextFormField(
-            controller: _controller.textFieldControllers[1],
-            textInputAction: TextInputAction.done,
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: AppColors.textFieldColor,
-              labelText: "Student ID",
-              border: OutlineInputBorder(
-                borderSide: BorderSide.none,
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          ),
-          const SizedBox(height: 15),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text("Step 1 of 3"),
-              TextButton(
-                onPressed: () {
-                  _controller.nextPage();
-                },
-                child: const Text(
-                  "CONTINUE",
-                  style: TextStyle(fontSize: 16, color: AppColors.mainColor),
+      // Page 1: Email and Student ID
+      Form(
+        key: _formKeyPage1,
+        child: Column(
+          children: [
+            const Text("Please fill out the following fields"),
+            const SizedBox(height: 15),
+            TextFormField(
+              controller: _controller.textFieldControllers[0],
+              textInputAction: TextInputAction.done,
+              keyboardType: TextInputType.emailAddress,
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: AppColors.textFieldColor,
+                labelText: "Email",
+                border: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.circular(10),
                 ),
               ),
-            ],
-          ),
-        ],
-      ),
-      Column(
-        children: [
-          const Text("Please fill out the following fields"),
-          const SizedBox(height: 15),
-          TextFormField(
-            controller: _controller.textFieldControllers[2],
-            textInputAction: TextInputAction.done,
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: AppColors.textFieldColor,
-              labelText: "Name",
-              border: OutlineInputBorder(
-                borderSide: BorderSide.none,
-                borderRadius: BorderRadius.circular(10),
-              ),
+              validator: (value) {
+                if (value == null || value.trim().isEmpty) {
+                  return 'Please enter your email';
+                }
+                if (!RegExp(
+                  r'^\d+@stud\.fci-cu\.edu\.eg$',
+                ).hasMatch(value.trim())) {
+                  return 'Email must be in the format \n studentID@stud.fci-cu.edu.eg';
+                }
+                return null;
+              },
             ),
-          ),
-          const SizedBox(height: 10),
-          TextFormField(
-            controller: _controller.textFieldControllers[3],
-            obscureText: true,
-            textInputAction: TextInputAction.done,
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: AppColors.textFieldColor,
-              labelText: "Password",
-              border: OutlineInputBorder(
-                borderSide: BorderSide.none,
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          ),
-          const SizedBox(height: 10),
-          TextFormField(
-            controller: _controller.textFieldControllers[4],
-
-            obscureText: true,
-            textInputAction: TextInputAction.done,
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: AppColors.textFieldColor,
-              labelText: "Confirm Password",
-              border: OutlineInputBorder(
-                borderSide: BorderSide.none,
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          ),
-          const SizedBox(height: 15),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text("Step 2 of 3"),
-              TextButton(
-                onPressed: () {
-                  _controller.nextPage();
-                },
-                child: const Text(
-                  "CONTINUE",
-                  style: TextStyle(fontSize: 16, color: AppColors.mainColor),
+            const SizedBox(height: 10),
+            TextFormField(
+              controller: _controller.textFieldControllers[1],
+              textInputAction: TextInputAction.done,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: AppColors.textFieldColor,
+                labelText: "Student ID",
+                border: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.circular(10),
                 ),
               ),
-            ],
-          ),
-        ],
+              validator: (value) {
+                if (value == null || value.trim().isEmpty) {
+                  return 'Please enter your student ID';
+                }
+                if (!RegExp(r'^\d+$').hasMatch(value.trim())) {
+                  return 'Student ID must be a number';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 15),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("Step 1 of 3"),
+                TextButton(
+                  onPressed: () {
+                    if (_formKeyPage1.currentState!.validate()) {
+                      String email =
+                          _controller.textFieldControllers[0].text.trim();
+                      String studentId =
+                          _controller.textFieldControllers[1].text.trim();
+                      String studentIdFromEmail = email.split('@')[0];
+                      if (studentIdFromEmail == studentId) {
+                        _controller.nextPage();
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Student ID does not match the email',
+                            ),
+                          ),
+                        );
+                      }
+                    }
+                  },
+                  child: const Text(
+                    "CONTINUE",
+                    style: TextStyle(fontSize: 16, color: AppColors.mainColor),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
+      // Page 2: Name, Password, and Confirm Password
+      Form(
+        key: _formKeyPage2,
+        child: Column(
+          children: [
+            const Text("Please fill out the following fields"),
+            const SizedBox(height: 15),
+            TextFormField(
+              controller: _controller.textFieldControllers[2],
+              textInputAction: TextInputAction.done,
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: AppColors.textFieldColor,
+                labelText: "Name",
+                border: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              validator: (value) {
+                if (value == null || value.trim().isEmpty) {
+                  return 'Please enter your name';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 10),
+            TextFormField(
+              controller: _controller.textFieldControllers[3],
+              obscureText: true,
+              textInputAction: TextInputAction.done,
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: AppColors.textFieldColor,
+                labelText: "Password",
+                border: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              validator: (value) {
+                if (value == null || value.trim().isEmpty) {
+                  return 'Please enter your password';
+                }
+                if (value.length < 8) {
+                  return 'Password must be at least 8 characters long';
+                }
+                if (!RegExp(r'\d').hasMatch(value)) {
+                  return 'Password must contain at least one number';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 10),
+            TextFormField(
+              controller: _controller.textFieldControllers[4],
+              obscureText: true,
+              textInputAction: TextInputAction.done,
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: AppColors.textFieldColor,
+                labelText: "Confirm Password",
+                border: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              validator: (value) {
+                if (value == null || value.trim().isEmpty) {
+                  return 'Please confirm your password';
+                }
+                if (value != _controller.textFieldControllers[3].text) {
+                  return 'Passwords do not match';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 15),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("Step 2 of 3"),
+                TextButton(
+                  onPressed: () {
+                    if (_formKeyPage2.currentState!.validate()) {
+                      _controller.nextPage();
+                    }
+                  },
+                  child: const Text(
+                    "CONTINUE",
+                    style: TextStyle(fontSize: 16, color: AppColors.mainColor),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+      // Page 3: Gender and Level Selection
       Column(
         children: [
           const Text("Select Your Preferences"),

@@ -19,7 +19,7 @@ class StudentModel {
     this.gender,
     this.level,
   });
-   
+
   factory StudentModel.fromResponse(Map<String, dynamic> data) {
     StudentModel studentModel = StudentModel(
       name: data['name'],
