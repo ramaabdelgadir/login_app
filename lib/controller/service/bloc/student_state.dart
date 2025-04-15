@@ -23,6 +23,8 @@ class StudentSignupFailedState extends StudentState{
 
 
 
+
+
 class StudentLoginLoadingState extends StudentState{}
 
 class StudentLoginSuccessfullState extends StudentState{
@@ -36,6 +38,10 @@ class StudentLoginFailedState extends StudentState{
   final String errorMessage;
   StudentLoginFailedState({required this.errorMessage});
 }
+
+
+
+
 
 
 

@@ -17,8 +17,10 @@ class Splash extends StatefulWidget {
 class _SplashState extends State<Splash> {
 
   void am_i_logged_in()async{
+    
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String? token =  prefs.getString('token');
+    print(token);
     if (token==null){
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=>LoginPage()));
       }

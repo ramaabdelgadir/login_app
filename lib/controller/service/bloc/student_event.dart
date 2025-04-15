@@ -16,6 +16,7 @@ class StudentLoginEvent extends StudentEvent{
   StudentLoginEvent({required this.studentData});
 } 
 
+
 class StudentGetDataEvent extends StudentEvent{
 }
 
