@@ -3,7 +3,7 @@ import 'package:login_app/user/views/login_view.dart';
 import 'package:login_app/main/view/home_view.dart';
 import 'package:login_app/user/views/profile_view.dart';
 import 'package:login_app/user/views/signup_view.dart';
-import 'package:login_app/user/views/splash.dart';
+import 'package:login_app/splash.dart';
 
 void main() {
   runApp(const MyApp());
