@@ -7,7 +7,7 @@ import 'package:loading_indicator/loading_indicator.dart';
 import 'package:login_app/external/app_data.dart';
 import 'package:login_app/external/theme/app_colors.dart';
 import 'package:login_app/main/view/home_view.dart';
-import 'package:login_app/user/views/login_view.dart';
+import 'package:login_app/student/views/login_view.dart';
 import 'package:login_app/external/widget/custom_loading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
@@ -24,6 +24,7 @@ class _SplashState extends State<Splash> {
   void am_i_logged_in() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String? token = prefs.getString('token');
+    // await prefs.remove('token');
     if (token == null) {
       Navigator.of(
         context,
@@ -58,6 +59,7 @@ class _SplashState extends State<Splash> {
   }
 
   bool start_loading = false;
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(

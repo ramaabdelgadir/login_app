@@ -1,17 +1,16 @@
 import 'package:flutter/cupertino.dart';
-import 'package:login_app/user/controller/service/bloc/student_bloc.dart';
-import 'package:login_app/user/model/student_model.dart';
+import 'package:login_app/student/controller/service/bloc/student_bloc.dart';
+import 'package:login_app/student/model/student_model.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
-class HomeController {
+class MainProfileController {
 
   final StudentBloc studentBloc = StudentBloc();
-  String m = "";
-  int current_page_index = 1;
+
 
   StudentModel? studentData;
-  HomeController(){
+  MainProfileController(){
   }
   void getData(){
     studentBloc.add(StudentGetDataEvent());
