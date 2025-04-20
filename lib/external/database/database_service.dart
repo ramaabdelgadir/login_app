@@ -9,10 +9,13 @@ class DatabaseService {
   static final DatabaseService  instance = DatabaseService._constructor();
 
   final String _storesTableName = "stores";
-  final String _storesIdColumnName = "id";
-  final String _storesNameColumnName = "name";
-  final String _storesReviewColumnName = "review";
-  final String _storesLocationColumnName = "location";
+  final String _storesIdColumnName = "store_id";
+  final String _storesNameColumnName = "store_name";
+  final String _storesReviewColumnName = "store_review";
+  final String _storesImageColumnName = "store_image";
+  final String _store_location_longitudeColumnName ="store_location_longitude";
+  final String _store_location_latitudeColumnName ="store_location_latitude";
+  
 
 
 
@@ -35,10 +38,12 @@ class DatabaseService {
       onCreate: (db, version) {
         db.execute('''
         CREATE TABLE ${_storesTableName} (
-        $_storesIdColumnName INTEGER PRIMARY KEY,
+        $_storesIdColumnName INTEGER NOT NULL,
         $_storesNameColumnName TEXT NOT NULL,
-        $_storesLocationColumnName TEXT NOT NULL,
-        $_storesReviewColumnName REAL NOT NULL
+        $_storesImageColumnName TEXT NOT NULL,
+        $_storesReviewColumnName REAL NOT NULL,
+        $_store_location_longitudeColumnName REAL NOT NULL,
+        $_store_location_latitudeColumnName REAL NOT NULL
 
         )  
           
@@ -54,9 +59,12 @@ class DatabaseService {
     final storeMap = store.toMap();
     final db = await database;
     await db.insert(_storesTableName, {
-      _storesNameColumnName: storeMap['name'],
-      _storesLocationColumnName: storeMap['location'],
-      _storesReviewColumnName: storeMap['review']
+      _storesIdColumnName:storeMap['store_id'],
+      _storesNameColumnName: storeMap['store_name'],
+      _store_location_latitudeColumnName: storeMap['store_location_latitude'],
+      _store_location_longitudeColumnName: storeMap['store_location_longitude'],
+      _storesImageColumnName:storeMap['store_image'],
+      _storesReviewColumnName: storeMap['store_review']
     });
   }
 

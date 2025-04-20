@@ -8,11 +8,10 @@ class SingleStoreController {
     NEW_IS_FAVO_VALUE = storeModel.favo;
   }
    final StoresBloc storesBloc= StoresBloc();
-   
-   void addStoreToFavo(){
+   Future<void> addStoreToFavo() async{
     storesBloc.add(AddStoreToFavoEvent(storeid: storeModel.id));
   }
-   void removeStoreFromFavo(){
+   Future<void> removeStoreFromFavo()async{
     storesBloc.add(RemoveStoreFromFavoEvent(storeid: storeModel.id));
   }
   

@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:login_app/user/model/student_model.dart';
-import 'package:login_app/user/controller/service/repo/student_repo.dart';
+import 'package:login_app/student/model/student_model.dart';
+import 'package:login_app/student/controller/service/repo/student_repo.dart';
 
 part 'student_event.dart';
 part 'student_state.dart';

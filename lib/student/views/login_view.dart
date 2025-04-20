@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:login_app/user/controller/login_controller.dart';
-import 'package:login_app/user/controller/service/bloc/student_bloc.dart';
+import 'package:login_app/student/controller/login_controller.dart';
+import 'package:login_app/student/controller/service/bloc/student_bloc.dart';
 import 'package:login_app/external/theme/app_colors.dart';
-import 'package:login_app/user/views/signup_view.dart';
+import 'package:login_app/student/views/signup_view.dart';
 import 'package:login_app/external/widget/custom_loading.dart';
 
 class LoginPage extends StatelessWidget {
