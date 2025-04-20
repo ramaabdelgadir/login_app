@@ -2,9 +2,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:login_app/student/controller/profile_controller.dart';
-import 'package:login_app/student/controller/service/bloc/student_bloc.dart';
-import 'package:login_app/student/model/student_model.dart';
+import 'package:login_app/user/controller/profile_controller.dart';
+import 'package:login_app/user/controller/service/bloc/student_bloc.dart';
+import 'package:login_app/user/model/student_model.dart';
 import 'package:login_app/external/theme/app_colors.dart';
 import 'package:login_app/external/widget/custom_loading.dart';
 import 'package:login_app/external/app_data.dart';
@@ -184,7 +184,7 @@ class ProfilePageState extends State<ProfilePage> {
                                           fit: BoxFit.cover,
                                         )
                                         : Image.network(
-                                          "${AppData.SERVER_URL}/photos/profile_pics/${widget.studentData.profile_pic_path == null ? "DEFAULT_PROFILE_IMAGE.jpg" : widget.studentData.profile_pic_path}",
+                                          "${AppData.SERVER_URL}/profile_pics/${widget.studentData.profile_pic_path == null ? "DEFAULT_PROFILE_IMAGE.png" : widget.studentData.profile_pic_path}",
                                           height: 100,
                                           width: 100,
                                           fit: BoxFit.cover,
@@ -544,29 +544,6 @@ class ProfilePageState extends State<ProfilePage> {
                             ),
                           ],
                         ),
-                          const SizedBox(height: 8),
-
-                        Row(children: [Expanded(
-                              flex: 3,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppColors.mainColor,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ),
-                                child: const Text(
-                                  "Cancel",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            ),],)
                       ],
                     ),
                   ),

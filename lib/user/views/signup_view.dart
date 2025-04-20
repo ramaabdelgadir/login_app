@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:login_app/student/controller/service/bloc/student_bloc.dart';
-import 'package:login_app/student/controller/signup_controller.dart';
+import 'package:login_app/user/controller/service/bloc/student_bloc.dart';
+import 'package:login_app/user/controller/signup_controller.dart';
 import 'package:login_app/external/theme/app_colors.dart';
 import 'package:login_app/external/widget/custom_loading.dart';
 

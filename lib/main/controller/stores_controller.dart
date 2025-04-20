@@ -1,12 +1,7 @@
-import 'package:login_app/stores/controller/service/bloc/stores_bloc.dart';
-import 'package:login_app/stores/model/store_model.dart';
+import 'package:faker/faker.dart';
 
 class StoresController {
-  final StoresBloc storesBloc = StoresBloc();
-  
-
-void getStoresData(){
-  storesBloc.add(StoresGetDataEvent());
-}
-
+  String getRandomImage(){
+    return faker.image.image(random: true);
+  }
 }
