@@ -55,70 +55,13 @@ class _StoresViewState extends State<StoresView> {
                     itemBuilder: (context, i) {
                       return InkWell(
                         onTap: () async{
-                          final response = await Navigator.of(context).push(
+                           await Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) => SingleStoreView(storeModel: storesList[i],),
                             ),
                           );
-                          if (response["status"] ){
-                            final SingleStoreController singleStoreController = SingleStoreController(storeModel: response["store-model"] );
-                            if(response['value']){
-                            singleStoreController.addStoreToFavo();
-                            BlocListener<StoresBloc, StoresState>(
-                              bloc: singleStoreController.storesBloc,
-                              listener: (context, state) {
-                                switch(state.runtimeType){
-                                  case AddStoreToFavoSuccessState:{
-                                   state = state as AddStoreToFavoSuccessState;
-                                   showTopSnackBar(
-                                    Overlay.of(context),
-                                    CustomSnackBar.success(message: state.message),
-                                  );
-                                  }
-                                  case AddStoreToFavoFailedState:{
-                                   state = state as AddStoreToFavoSuccessState;
-                                   showTopSnackBar(
-                                    Overlay.of(context),
-                                    CustomSnackBar.error(message: state.message),
-                                  );
-                                  }
-                                  default:{}
-                                  }
-                              }
-                              
-                            );
-                            }
-                            else{
-                            singleStoreController.removeStoreFromFavo();
-                            BlocListener<StoresBloc, StoresState>(
-                              bloc: singleStoreController.storesBloc,
-                              listener: (context, state) {
-                                switch(state.runtimeType){
-                                  case RemoveFromFavoSuccessfulState:{
-                                   state = state as AddStoreToFavoSuccessState;
-                                   showTopSnackBar(
-                                    Overlay.of(context),
-                                    CustomSnackBar.success(message: state.message),
-                                  );
-                                  }
-                                  case RemoveFromFavoFailedState:{
-                                   state = state as AddStoreToFavoSuccessState;
-                                   showTopSnackBar(
-                                    Overlay.of(context),
-                                    CustomSnackBar.error(message: state.message),
-                                  );
-                                  }
-                                  default:{}
-                                  }
-                              }
-                              
-                            );
-                              //  showTopSnackBar(
-                              //       Overlay.of(context),
-                              //       CustomSnackBar.info(message: "Remved '${response['storename']}' From Favo"),
-                              //     );
-                            }
-                          }else{}
+                          
+                        widget.controller.getStoresData();
                         },
                         child: CustomStoreCard(storeModel:storesList[i]),
                       );

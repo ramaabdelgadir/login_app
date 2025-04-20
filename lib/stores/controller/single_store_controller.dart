@@ -8,6 +8,7 @@ class SingleStoreController {
     NEW_IS_FAVO_VALUE = storeModel.favo;
   }
    final StoresBloc storesBloc= StoresBloc();
+   
    void addStoreToFavo(){
     storesBloc.add(AddStoreToFavoEvent(storeid: storeModel.id));
   }
