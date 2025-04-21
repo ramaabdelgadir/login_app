@@ -4,29 +4,19 @@ import 'package:login_app/external/app_data.dart';
 import 'package:login_app/external/theme/app_colors.dart';
 import 'package:login_app/external/widget/custom_loading.dart';
 import 'package:login_app/external/widget/custom_store_card.dart';
-import 'package:login_app/main/controller/main_controller.dart';
-import 'package:login_app/stores/controller/service/bloc/stores_bloc.dart';
-import 'package:login_app/main/controller/stores_controller.dart';
-import 'package:login_app/stores/controller/single_store_controller.dart';
-import 'package:login_app/stores/model/store_model.dart';
-import 'package:login_app/stores/view/single_store_view.dart';
+import 'package:login_app/main/services/main_stores_service/stores_bloc.dart';
+import 'package:login_app/external/model/store_model.dart';
+import 'package:login_app/single_store/view/single_store_view.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
-class StoresView extends StatefulWidget {
-  StoresView({super.key, required this.controller});
-  final StoresController controller ;
-
-
-  @override
-  State<StoresView> createState() => _StoresViewState();
-}
-
-class _StoresViewState extends State<StoresView> {
+class StoresView extends StatelessWidget {
+  final StoresBloc storesBloc = StoresBloc();
   @override
   Widget build(BuildContext context) {
+    storesBloc.add(StoresGetDataEvent());
     return BlocBuilder<StoresBloc, StoresState>(
-      bloc: widget.controller.storesBloc,
+      bloc: storesBloc,
       builder: (context, state) {
         switch(state.runtimeType){
           case StoresGetDataLoadingState:
@@ -38,7 +28,8 @@ class _StoresViewState extends State<StoresView> {
             );
           case StoresGetDataSuccessState:
            state = state as StoresGetDataSuccessState;
-           final List storesList = state.storesList; 
+           AppData.allStores = state.storesList;
+            
 
             return Container(
               padding: EdgeInsets.symmetric(horizontal: 12),
@@ -48,7 +39,7 @@ class _StoresViewState extends State<StoresView> {
                 slivers: <Widget>[
                   SliverToBoxAdapter(child: SizedBox(height: 20)),
                   SliverGrid.builder(
-                    itemCount: storesList.length,
+                    itemCount: AppData.allStores!.length,
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       crossAxisSpacing: 2,
@@ -59,39 +50,36 @@ class _StoresViewState extends State<StoresView> {
                         onTap: () async{
                           final response = await Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) => SingleStoreView(storeModel: storesList[i],),
+                              builder: (context) => SingleStoreView(storeModel: AppData.allStores![i],),
                             ),
                           );
-
-                          if (response["status"] ){
-                            final SingleStoreController singleStoreController = SingleStoreController(storeModel: response["store-model"] );
-                            if(response['value']){
-                            await singleStoreController.addStoreToFavo();
-                            }
-                            else{
-                            await singleStoreController.removeStoreFromFavo();
-                            }
-                            
-                          
-                          }else{}
+                
                         },
-                        child: CustomStoreCard(storeModel:storesList[i]),
+                        child: CustomStoreCard(storeModel:AppData.allStores![i]),
                       );
                     },
                   ),
                 ],
               ),
             );
+            case StoresGetDataFailedState:
+            return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CustomLoading()
+                          
+                        ],
+                        );
           default:
           return Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-          children: [Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text("an Error Occure"),
-            ],
-          )],);
-
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CustomLoading()
+                          
+                        ],
+            );
         }
       },
     );

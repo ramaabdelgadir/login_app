@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:login_app/external/app_data.dart';
 import 'package:login_app/external/theme/app_colors.dart';
-import 'package:login_app/main/view/home_view.dart';
+import 'package:login_app/main/view/main_view.dart';
 import 'package:login_app/student/views/login_view.dart';
 import 'package:login_app/external/widget/custom_loading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -32,7 +32,7 @@ class _SplashState extends State<Splash> {
     } else {
       Navigator.of(
         context,
-      ).pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
+      ).pushReplacement(MaterialPageRoute(builder: (context) => MainView()));
     }
   }
 

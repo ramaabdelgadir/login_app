@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:login_app/external/theme/app_colors.dart';
-import 'package:login_app/stores/model/store_model.dart';
+import 'package:login_app/external/model/store_model.dart';
 
 class CustomStoreCard extends StatelessWidget {
   CustomStoreCard({super.key, required this.storeModel});

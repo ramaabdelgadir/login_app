@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:login_app/student/model/student_model.dart';
+import 'package:login_app/external/model/student_model.dart';
 import 'package:login_app/student/controller/service/repo/student_repo.dart';
 
 part 'student_event.dart';
@@ -11,7 +11,6 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
   StudentBloc() : super(StudentInitial()) {
     on<StudentSignupEvent>(studentSignupEvent);
     on<StudentLoginEvent>(studentLoginEvent);
-    on<StudentGetDataEvent>(studentGetDataEvent);
     on<StudentUpdateDataEvent>(studentUpdateDataEvent);
     on<StudentDeleteAccountEvent>(studentDeleteAccountEvent);
   }
@@ -37,20 +36,6 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
       }
     else{
       emit(StudentLoginFailedState(errorMessage: response['error']));
-      }
-
-  }
-
-  FutureOr<void> studentGetDataEvent(StudentGetDataEvent event, Emitter<StudentState> emit) async{
-    emit(StudentGetStudentDataLoadingState());
-    final Map<String,dynamic> response= await StudentRepo.getStudentData();
-    
-    if (response['status']){
-      final studentModel = StudentModel.fromResponse(response);
-      emit(StudentGetStudentDataSuccessfullState(studentData: studentModel));
-      }
-    else{
-      emit(StudentGetStudentDataFailedState(errorMessage: response['error']));
       }
 
   }

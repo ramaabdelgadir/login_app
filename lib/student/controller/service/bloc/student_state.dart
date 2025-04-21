@@ -39,21 +39,6 @@ class StudentLoginFailedState extends StudentState{
 
 
 
-class StudentGetStudentDataLoadingState extends StudentState{
-}
-
-class StudentGetStudentDataSuccessfullState extends StudentState{
- final StudentModel studentData;
-  StudentGetStudentDataSuccessfullState({required this.studentData});
-
-}
-
-class StudentGetStudentDataFailedState extends StudentState{
-  final String errorMessage;
-  StudentGetStudentDataFailedState({required this.errorMessage});
-}
-
-
 
 
 class StudentUpdateDataLoadingState extends StudentState{

@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:login_app/student/controller/profile_controller.dart';
 import 'package:login_app/student/controller/service/bloc/student_bloc.dart';
-import 'package:login_app/student/model/student_model.dart';
+import 'package:login_app/external/model/student_model.dart';
 import 'package:login_app/external/theme/app_colors.dart';
 import 'package:login_app/external/widget/custom_loading.dart';
 import 'package:login_app/external/app_data.dart';

@@ -1,4 +1,4 @@
-import 'package:login_app/stores/model/store_model.dart';
+import 'package:login_app/external/model/store_model.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:sqflite/sqflite.dart';
@@ -35,6 +35,7 @@ class DatabaseService {
     final databasePath = join(databaseDirpath,"stores_db.db");
     final database = await openDatabase(
       databasePath,
+      version: 1,
       onCreate: (db, version) {
         db.execute('''
         CREATE TABLE ${_storesTableName} (
@@ -55,38 +56,71 @@ class DatabaseService {
   }
 
 
-  void addStore(StoreModel store) async{
-    final storeMap = store.toMap();
-    final db = await database;
-    await db.insert(_storesTableName, {
-      _storesIdColumnName:storeMap['store_id'],
-      _storesNameColumnName: storeMap['store_name'],
-      _store_location_latitudeColumnName: storeMap['store_location_latitude'],
-      _store_location_longitudeColumnName: storeMap['store_location_longitude'],
-      _storesImageColumnName:storeMap['store_image'],
-      _storesReviewColumnName: storeMap['store_review']
-    });
+  Future<bool> addStore(StoreModel store) async{
+    final is_exist = await getStoreById(store.id);
+      if (is_exist==null){
+      final storeMap = store.toMap();
+      final db = await database;
+      await db.insert(_storesTableName, {
+        _storesIdColumnName:storeMap['store_id'],
+        _storesNameColumnName: storeMap['store_name'],
+        _store_location_latitudeColumnName: storeMap['store_location_latitude'],
+        _store_location_longitudeColumnName: storeMap['store_location_longitude'],
+        _storesImageColumnName:storeMap['store_image'],
+        _storesReviewColumnName: storeMap['store_review']
+      });
+      return true;
+      }
+      else{
+      return false;
+      }
   }
+  Future<StoreModel?> getStoreById(int id) async {
+  final db = await database;
+  final data = await db.query(
+    _storesTableName,
+    where: '$_storesIdColumnName = ?',
+    whereArgs: [id],
+  );
+
+  if (data.isNotEmpty) {
+    return StoreModel.fromMap(data.first);
+  } else {
+    return null; 
+  }
+}
 
 
 
-  Future<List<StoreModel>> getStores() async{
 
+  Future<List<StoreModel>?> getStores() async{
+
+  try{
   final db = await database;
   final data = await db.query(_storesTableName);
   
   List<StoreModel> stores = data.map((e)=> StoreModel.fromMap(e)).toList();
   return stores;
+  } catch(e){
+    print(e);
+    return null;
+  }
   }
 
-  void deleteStore(int id) async{
+  Future<bool> deleteStore(int id) async{
+    final store = getStoreById(id);
+    if (store !=null){
     final db = await database;
     await db.delete(
       _storesTableName,
-      where: 'id = ?',
+      where: '$_storesIdColumnName = ?',
       whereArgs: [
         id,
       ]
     );
+    return true;
+    }else{
+      return false;
+    }
   }
 }
