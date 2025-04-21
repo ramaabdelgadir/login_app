@@ -32,7 +32,7 @@ class FavoStoresView extends StatelessWidget {
             slivers: <Widget>[
               SliverToBoxAdapter(child: SizedBox(height: 20)),
               SliverGrid.builder(
-                itemCount: 1,
+                itemCount: storesList.length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   crossAxisSpacing: 2,
@@ -41,7 +41,7 @@ class FavoStoresView extends StatelessWidget {
                 itemBuilder: (context, i) {
                   return InkWell(
                     onTap: () async {
-                      final response = await Navigator.of(context).push(
+                       await Navigator.of(context).push(
                         MaterialPageRoute(
                           builder:
                               (context) => SingleStoreView(
@@ -49,6 +49,7 @@ class FavoStoresView extends StatelessWidget {
                               ),
                         ),
                       );
+                      favoStoreBloc.add(GetAllStoresFromFavoEvent());
                  
                     },
                     child: CustomStoreCard(
@@ -87,7 +88,7 @@ class FavoStoresView extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                Text("You Don't Have Favo. Stores")
+                Text("You Don't Have Any Favo. Stores")
               ],)
             ],
           );

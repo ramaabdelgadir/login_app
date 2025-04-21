@@ -4,30 +4,11 @@ abstract class StoresState {}
 
 final class StoresInitial extends StoresState {}
 
+class StoresGetDataLoadingState extends StoresState {}
 
-class StoresGetDataLoadingState extends StoresState{}
-class StoresGetDataSuccessState extends StoresState{
+class StoresGetDataSuccessState extends StoresState {
   final List storesList;
-  StoresGetDataSuccessState({required this.storesList}); 
-}
-class StoresGetDataFailedState extends StoresState{}
-
-
-class AddStoreToFavoSuccessState extends StoresState{
-  final String message;
-  AddStoreToFavoSuccessState({required this.message});
+  StoresGetDataSuccessState({required this.storesList});
 }
 
-class AddStoreToFavoFailedState extends StoresState{
-  final String message;
-  AddStoreToFavoFailedState({required this.message});
-}
-
-class RemoveFromFavoSuccessfulState extends StoresState{
-  final String message;
-  RemoveFromFavoSuccessfulState({required this.message});
-}
-class RemoveFromFavoFailedState extends StoresState{
-  final String message;
-  RemoveFromFavoFailedState({required this.message});
-}
+class StoresGetDataFailedState extends StoresState {}

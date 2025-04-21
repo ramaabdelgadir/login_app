@@ -42,7 +42,7 @@ factory StoreModel.fromMap(Map<String,dynamic> data){
     store_location_latitude: data['store_location_latitude'],
     review: data['store_review'],
     image: AppData.SERVER_URL!+"/"+ data['store_image'],
-    favo: data['favo']);
+    favo: data['favo']??true);
 
 }
 static String getRandomImage(){

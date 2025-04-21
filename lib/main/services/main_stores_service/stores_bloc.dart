@@ -10,27 +10,29 @@ part 'stores_state.dart';
 
 class StoresBloc extends Bloc<StoresEvent, StoresState> {
   StoresBloc() : super(StoresInitial()) {
-   on<StoresGetDataEvent>(storesGetData);
+    on<StoresGetDataEvent>(storesGetData);
   }
 
-  FutureOr<void> storesGetData(StoresGetDataEvent event, Emitter<StoresState> emit) async{
+  FutureOr<void> storesGetData(
+    StoresGetDataEvent event,
+    Emitter<StoresState> emit,
+  ) async {
     emit(StoresGetDataLoadingState());
-    final Map<String,dynamic>response = await StoreRepo.getStoresData() ;
-    if (response['status']){
-      
+    final Map<String, dynamic> response = await StoreRepo.getStoresData();
+    if (response['status']) {
       final List studentFavoStores = response['favo'];
-      final List<dynamic> storesList = response['data'].map((e){
-         if (studentFavoStores.contains(e['store_id'])){
-          e['favo']= true;
-         }else{
-          e['favo']=false;
-         }
-        return StoreModel.fromMap(e);
-         }).toList();
+      final List<dynamic> storesList =
+          response['data'].map((e) {
+            if (studentFavoStores.contains(e['store_id'])) {
+              e['favo'] = true;
+            } else {
+              e['favo'] = false;
+            }
+            return StoreModel.fromMap(e);
+          }).toList();
       emit(StoresGetDataSuccessState(storesList: storesList));
-    }else{
+    } else {
       emit(StoresGetDataFailedState());
     }
   }
-
 }

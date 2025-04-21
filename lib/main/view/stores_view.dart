@@ -48,11 +48,12 @@ class StoresView extends StatelessWidget {
                     itemBuilder: (context, i) {
                       return InkWell(
                         onTap: () async{
-                          final response = await Navigator.of(context).push(
+                          await Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) => SingleStoreView(storeModel: AppData.allStores![i],),
                             ),
                           );
+                          storesBloc.add(StoresGetDataEvent());
                 
                         },
                         child: CustomStoreCard(storeModel:AppData.allStores![i]),

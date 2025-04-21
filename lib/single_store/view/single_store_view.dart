@@ -12,6 +12,7 @@ class SingleStoreView extends StatelessWidget {
   final StoreModel storeModel;
   SingleStoreView({required this.storeModel});
   final SingleStoreBloc singleStoreBloc = SingleStoreBloc();
+  bool is_the_button_valid=true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -112,21 +113,25 @@ class SingleStoreView extends StatelessWidget {
                           builder: (context, state) {
                             if(!storeModel.favo){
                               switch(state.runtimeType){
-                                case SingleStoreAddingLoadingState:
-                                  
+                                case SingleStoreAddingLoadingState:{
+                                  is_the_button_valid=false;
                                   return Icon(
                                          Icons.favorite,
                                     color:
                                         AppColors.mainColor,
                                     size: 30,
                                   );
+                                  }
                                 case SingleStoreAddingSuccessState:
-                                  return Icon(
+                                  {
+                                    is_the_button_valid=true;
+                                    storeModel.favo =!storeModel.favo;
+                                    return Icon(
                                          Icons.favorite,
                                     color:
                                         Colors.red,
                                     size: 30,
-                                  );
+                                  );}
                                 case SingleStoreAddingFailedState:{
                                   showTopSnackBar(
                                     Overlay.of(context),
@@ -145,21 +150,24 @@ class SingleStoreView extends StatelessWidget {
                               }
                             }else{
                               switch(state.runtimeType){
-                                
-                                case SingleStoreRemovingFromLoadingState:
+                                case SingleStoreRemovingFromLoadingState:{
+                                  is_the_button_valid=false;
                                   return Icon(
-                                         Icons.favorite,
+                                          Icons.favorite,
                                     color:
                                         AppColors.mainColor,
                                     size: 30,
-                                  );
+                                  );}
                                 case SingleStoreRemovingFromSuccessState:
-                                  return Icon(
+                                  {
+                                    is_the_button_valid=true;
+                                    storeModel.favo =!storeModel.favo;
+                                    return Icon(
                                          Icons.favorite_border,
                                     color:
                                         Colors.grey,
                                     size: 30,
-                                  );
+                                  );}
                                 case SingleStoreRemovingFromFailedState:{
                                   showTopSnackBar(
                                     Overlay.of(context),
@@ -181,12 +189,14 @@ class SingleStoreView extends StatelessWidget {
                           },
                         ),
                         tooltip: 'Add to Favorites',
+                        
                         onPressed: () {
+                            if(is_the_button_valid){
                           if (!storeModel.favo){
                             singleStoreBloc.add((AddStoreToFavoEvent(storeModel: storeModel)));
                           }else{
                             singleStoreBloc.add(RemoveStoreFromFavoEvent(storeid: storeModel.id));
-                          }
+                          }}
                         },
                       ),
                     ],
