@@ -4,8 +4,26 @@ import 'package:login_app/main/view/main_view.dart';
 import 'package:login_app/student/views/profile_view.dart';
 import 'package:login_app/student/views/signup_view.dart';
 import 'package:login_app/splash.dart';
+import 'package:geolocator/geolocator.dart';
 
-void main() {
+Future<void> requestLocationPermission() async {
+  LocationPermission permission = await Geolocator.checkPermission();
+
+  if (permission == LocationPermission.denied) {
+    permission = await Geolocator.requestPermission();
+    if (permission == LocationPermission.denied) {
+      throw Exception('Location permissions are denied.');
+    }
+  }
+
+  if (permission == LocationPermission.deniedForever) {
+    throw Exception('Location permissions are permanently denied.');
+  }
+}
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await requestLocationPermission(); //
   runApp(const MyApp());
 }
 

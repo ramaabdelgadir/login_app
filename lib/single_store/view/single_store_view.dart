@@ -7,12 +7,69 @@ import 'package:login_app/external/widget/custom_loading.dart';
 import 'package:login_app/single_store/service/single_store_bloc.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
+import 'dart:math';
+import 'package:geolocator/geolocator.dart';
 
 class SingleStoreView extends StatelessWidget {
   final StoreModel storeModel;
+
+  /// Function to calculate the distance between two geographical points
+  double calculateDistance(
+    double storeLat,
+    double storeLng,
+    double userLat,
+    double userLng,
+  ) {
+    const double earthRadius = 6371; // Earth's radius in kilometers
+
+    double toRadians(double degree) => degree * pi / 180;
+
+    final double dLat = toRadians(userLat - storeLat);
+    final double dLng = toRadians(userLng - storeLng);
+
+    final double a =
+        sin(dLat / 2) * sin(dLat / 2) +
+        cos(toRadians(storeLat)) *
+            cos(toRadians(userLat)) *
+            sin(dLng / 2) *
+            sin(dLng / 2);
+
+    final double c = 2 * atan2(sqrt(a), sqrt(1 - a));
+
+    return earthRadius * c; // Distance in kilometers
+  }
+
+  /// Function to get the user's current location
+  Future<Position> _getCurrentLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Check if location services are enabled
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      throw Exception('Location services are disabled.');
+    }
+
+    // Check for location permissions
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        throw Exception('Location permissions are denied.');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      throw Exception('Location permissions are permanently denied.');
+    }
+
+    // Get the current position
+    return await Geolocator.getCurrentPosition();
+  }
+
   SingleStoreView({required this.storeModel});
   final SingleStoreBloc singleStoreBloc = SingleStoreBloc();
-  bool is_the_button_valid=true;
+  bool is_the_button_valid = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -103,7 +160,44 @@ class SingleStoreView extends StatelessWidget {
                       IconButton(
                         icon: const Icon(Icons.location_on),
                         tooltip: 'View Location',
-                        onPressed: () {},
+                        onPressed: () async {
+                          try {
+                            // Get the user's current location
+                            Position userPosition = await _getCurrentLocation();
+
+                            // Calculate the distance
+                            double distance = calculateDistance(
+                              storeModel.store_location_latitude,
+                              storeModel.store_location_longitude,
+                              userPosition.latitude /*30.030813*/,
+                              userPosition.longitude /*31.209620*/,
+                            );
+
+                            // Show the distance in a dialog
+                            showDialog(
+                              context: context,
+                              builder:
+                                  (context) => AlertDialog(
+                                    title: const Text('Distance to Store'),
+                                    content: Text(
+                                      'The store is ${distance.toStringAsFixed(2)} km away.',
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () => Navigator.pop(context),
+                                        child: const Text('OK'),
+                                      ),
+                                    ],
+                                  ),
+                            );
+                          } catch (e) {
+                            // Handle errors (e.g., location permissions denied)
+                            showTopSnackBar(
+                              Overlay.of(context),
+                              CustomSnackBar.error(message: e.toString()),
+                            );
+                          }
+                        },
                         color: AppColors.mainColor,
                         iconSize: 30,
                       ),
@@ -111,92 +205,103 @@ class SingleStoreView extends StatelessWidget {
                         icon: BlocBuilder<SingleStoreBloc, SingleStoreState>(
                           bloc: singleStoreBloc,
                           builder: (context, state) {
-                            if(!storeModel.favo){
-                              switch(state.runtimeType){
-                                case SingleStoreAddingLoadingState:{
-                                  is_the_button_valid=false;
-                                  return Icon(
-                                         Icons.favorite,
-                                    color:
-                                        AppColors.mainColor,
-                                    size: 30,
-                                  );
+                            if (!storeModel.favo) {
+                              switch (state.runtimeType) {
+                                case SingleStoreAddingLoadingState:
+                                  {
+                                    is_the_button_valid = false;
+                                    return Icon(
+                                      Icons.favorite,
+                                      color: AppColors.mainColor,
+                                      size: 30,
+                                    );
                                   }
                                 case SingleStoreAddingSuccessState:
                                   {
-                                    is_the_button_valid=true;
-                                    storeModel.favo =!storeModel.favo;
+                                    is_the_button_valid = true;
+                                    storeModel.favo = !storeModel.favo;
                                     return Icon(
-                                         Icons.favorite,
-                                    color:
-                                        Colors.red,
-                                    size: 30,
-                                  );}
-                                case SingleStoreAddingFailedState:{
-                                  showTopSnackBar(
-                                    Overlay.of(context),
-                                    CustomSnackBar.error(message:"an Error Occure"),
-                                  );
-                                   return Placeholder();
+                                      Icons.favorite,
+                                      color: Colors.red,
+                                      size: 30,
+                                    );
+                                  }
+                                case SingleStoreAddingFailedState:
+                                  {
+                                    showTopSnackBar(
+                                      Overlay.of(context),
+                                      CustomSnackBar.error(
+                                        message: "an Error Occure",
+                                      ),
+                                    );
+                                    return Placeholder();
                                   }
 
                                 default:
                                   return Icon(
-                                         Icons.favorite_border,
-                                    color:
-                                        Colors.grey,
+                                    Icons.favorite_border,
+                                    color: Colors.grey,
                                     size: 30,
                                   );
                               }
-                            }else{
-                              switch(state.runtimeType){
-                                case SingleStoreRemovingFromLoadingState:{
-                                  is_the_button_valid=false;
-                                  return Icon(
-                                          Icons.favorite,
-                                    color:
-                                        AppColors.mainColor,
-                                    size: 30,
-                                  );}
+                            } else {
+                              switch (state.runtimeType) {
+                                case SingleStoreRemovingFromLoadingState:
+                                  {
+                                    is_the_button_valid = false;
+                                    return Icon(
+                                      Icons.favorite,
+                                      color: AppColors.mainColor,
+                                      size: 30,
+                                    );
+                                  }
                                 case SingleStoreRemovingFromSuccessState:
                                   {
-                                    is_the_button_valid=true;
-                                    storeModel.favo =!storeModel.favo;
+                                    is_the_button_valid = true;
+                                    storeModel.favo = !storeModel.favo;
                                     return Icon(
-                                         Icons.favorite_border,
-                                    color:
-                                        Colors.grey,
-                                    size: 30,
-                                  );}
-                                case SingleStoreRemovingFromFailedState:{
-                                  showTopSnackBar(
-                                    Overlay.of(context),
-                                    CustomSnackBar.error(message:"an Error Occure"),
-                                  );
-                                   return Placeholder();
+                                      Icons.favorite_border,
+                                      color: Colors.grey,
+                                      size: 30,
+                                    );
+                                  }
+                                case SingleStoreRemovingFromFailedState:
+                                  {
+                                    showTopSnackBar(
+                                      Overlay.of(context),
+                                      CustomSnackBar.error(
+                                        message: "an Error Occure",
+                                      ),
+                                    );
+                                    return Placeholder();
                                   }
 
                                 default:
                                   return Icon(
-                                         Icons.favorite,
-                                    color:
-                                        Colors.red,
+                                    Icons.favorite,
+                                    color: Colors.red,
                                     size: 30,
                                   );
                               }
-
                             }
                           },
                         ),
                         tooltip: 'Add to Favorites',
-                        
+
                         onPressed: () {
-                            if(is_the_button_valid){
-                          if (!storeModel.favo){
-                            singleStoreBloc.add((AddStoreToFavoEvent(storeModel: storeModel)));
-                          }else{
-                            singleStoreBloc.add(RemoveStoreFromFavoEvent(storeid: storeModel.id));
-                          }}
+                          if (is_the_button_valid) {
+                            if (!storeModel.favo) {
+                              singleStoreBloc.add(
+                                (AddStoreToFavoEvent(storeModel: storeModel)),
+                              );
+                            } else {
+                              singleStoreBloc.add(
+                                RemoveStoreFromFavoEvent(
+                                  storeid: storeModel.id,
+                                ),
+                              );
+                            }
+                          }
                         },
                       ),
                     ],

@@ -24,7 +24,7 @@ class _SplashState extends State<Splash> {
   void am_i_logged_in() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String? token = prefs.getString('token');
-    // await prefs.remove('token');
+    //await prefs.remove('token');
     if (token == null) {
       Navigator.of(
         context,
@@ -59,7 +59,7 @@ class _SplashState extends State<Splash> {
   }
 
   bool start_loading = false;
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
