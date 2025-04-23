@@ -48,9 +48,10 @@ class MainProfileView extends StatelessWidget {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(50),
                         child: Image.network(
-                          "${AppData.SERVER_URL}/${studentData.profile_pic_path}",
+                          "${AppData.SERVER_URL}/${studentData.profile_pic_path}?timestamp=${DateTime.now().millisecondsSinceEpoch}",
                           height: 80,
-                          width: 80,
+                          width: 80,                                          
+                          key: UniqueKey(),
                           fit: BoxFit.cover,
                         ),
                       ),

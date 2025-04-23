@@ -24,7 +24,7 @@ class _SplashState extends State<Splash> {
   void am_i_logged_in() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String? token = prefs.getString('token');
-    await prefs.remove('token');
+    // await prefs.remove('token');
     if (token == null) {
       Navigator.of(
         context,
@@ -35,30 +35,36 @@ class _SplashState extends State<Splash> {
       );
     }
   }
-
-  final TextEditingController _textEditingController = TextEditingController();
-
-  Future<bool> checkServer() async {
-    print("Starting server check...");
-    bool check = true;
-    try {
-      await http
-          .get(Uri.parse(AppData.SERVER_URL!))
-          .timeout(
-            Duration(seconds: 5), //+
-            onTimeout: () {
-              //+
-              check = false;
-              throw TimeoutException('Server check timed out'); //+
-            },
-          );
-    } catch (e) {
-      check = false;
-    }
-    return check;
+  @override
+  void initState() {
+    AppData.SERVER_URL = "https://api.almahil.com";
+    am_i_logged_in();
+    super.initState();
   }
 
-  bool start_loading = false;
+  // final TextEditingController _textEditingController = TextEditingController();
+
+  // Future<bool> checkServer() async {
+  //   print("Starting server check...");
+  //   bool check = true;
+  //   try {
+  //     await http
+  //         .get(Uri.parse(AppData.SERVER_URL!))
+  //         .timeout(
+  //           Duration(seconds: 5), //+
+  //           onTimeout: () {
+  //             //+
+  //             check = false;
+  //             throw TimeoutException('Server check timed out'); //+
+  //           },
+  //         );
+  //   } catch (e) {
+  //     check = false;
+  //   }
+  //   return check;
+  // }
+
+  // bool start_loading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -66,8 +72,9 @@ class _SplashState extends State<Splash> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          start_loading
-              ? Container(
+          // start_loading
+          //     ?
+               Container(
                 margin: EdgeInsets.symmetric(horizontal: 35),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15),
@@ -101,69 +108,69 @@ class _SplashState extends State<Splash> {
                   ],
                 ),
               )
-              : Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  children: [
-                    TextField(
-                      controller: _textEditingController,
-                      decoration: InputDecoration(
-                        labelText: 'http://192.168.1.20:5000',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: ElevatedButton(
-                              onPressed: () async {
-                                setState(() {
-                                  start_loading = true;
-                                });
-                                AppData.SERVER_URL =
-                                    _textEditingController.value.text;
-                                if (await checkServer()) {
-                                  showTopSnackBar(
-                                    Overlay.of(context),
-                                    CustomSnackBar.success(
-                                      message: "Connected Successfully",
-                                    ),
-                                  );
-                                  am_i_logged_in();
-                                } else {
-                                  showTopSnackBar(
-                                    Overlay.of(context),
-                                    CustomSnackBar.error(
-                                      message: "Error in connecting",
-                                    ),
-                                  );
-                                }
-                                setState(() {
-                                  start_loading = false;
-                                });
-                              },
-                              child: Text(
-                                "Connect",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.mainColor,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              // : Padding(
+              //   padding: const EdgeInsets.symmetric(horizontal: 20),
+              //   child: Column(
+              //     children: [
+              //       TextField(
+              //         controller: _textEditingController,
+              //         decoration: InputDecoration(
+              //           labelText: 'http://192.168.1.20:5000',
+              //           border: OutlineInputBorder(
+              //             borderRadius: BorderRadius.circular(5),
+              //           ),
+              //         ),
+              //       ),
+              //       Padding(
+              //         padding: const EdgeInsets.all(8.0),
+              //         child: Row(
+              //           children: [
+              //             Expanded(
+              //               child: ElevatedButton(
+              //                 onPressed: () async {
+              //                   setState(() {
+              //                     start_loading = true;
+              //                   });
+              //                   AppData.SERVER_URL =
+              //                       _textEditingController.value.text;
+              //                   if (await checkServer()) {
+              //                     showTopSnackBar(
+              //                       Overlay.of(context),
+              //                       CustomSnackBar.success(
+              //                         message: "Connected Successfully",
+              //                       ),
+              //                     );
+              //                     am_i_logged_in();
+              //                   } else {
+              //                     showTopSnackBar(
+              //                       Overlay.of(context),
+              //                       CustomSnackBar.error(
+              //                         message: "Error in connecting",
+              //                       ),
+              //                     );
+              //                   }
+              //                   setState(() {
+              //                     start_loading = false;
+              //                   });
+              //                 },
+              //                 child: Text(
+              //                   "Connect",
+              //                   style: TextStyle(color: Colors.white),
+              //                 ),
+              //                 style: ElevatedButton.styleFrom(
+              //                   backgroundColor: AppColors.mainColor,
+              //                   shape: RoundedRectangleBorder(
+              //                     borderRadius: BorderRadius.circular(8),
+              //                   ),
+              //                 ),
+              //               ),
+              //             ),
+              //           ],
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              // ),
         ],
       ),
     );
