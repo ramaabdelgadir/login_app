@@ -5,6 +5,7 @@ class StoreModel {
 
 final int id;
 final String name;
+final String store_description;
 final double review;
 final String image;
 final double store_location_longitude;
@@ -18,6 +19,8 @@ required this.review,
 required this.image,
 required this.store_location_latitude,
 required this.store_location_longitude,
+required this.store_description,
+
 required this.favo
 });
 
@@ -29,6 +32,7 @@ Map<String,dynamic> toMap(){
     'store_image': image.replaceFirst("${AppData.SERVER_URL!}/", ""),
     'store_location_longitude': store_location_longitude,
     'store_location_latitude': store_location_latitude,
+    "store_description": store_description,
     'favo': favo,
   };
 
@@ -42,6 +46,7 @@ factory StoreModel.fromMap(Map<String,dynamic> data){
     store_location_latitude: data['store_location_latitude'],
     review: data['store_review'],
     image: AppData.SERVER_URL!+"/"+ data['store_image'],
+    store_description: data["store_description"],
     favo: data['favo']??true);
 
 }

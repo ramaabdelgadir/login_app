@@ -14,6 +14,7 @@ class DatabaseService {
   final String _storesImageColumnName = "store_image";
   final String _store_location_longitudeColumnName = "store_location_longitude";
   final String _store_location_latitudeColumnName = "store_location_latitude";
+  final String _storeDescriptionColumnName = "store_description";
 
   DatabaseService._constructor();
 
@@ -37,7 +38,8 @@ class DatabaseService {
         $_storesImageColumnName TEXT NOT NULL,
         $_storesReviewColumnName REAL NOT NULL,
         $_store_location_longitudeColumnName REAL NOT NULL,
-        $_store_location_latitudeColumnName REAL NOT NULL
+        $_store_location_latitudeColumnName REAL NOT NULL,
+        $_storeDescriptionColumnName TEXT NOT NULL
 
         )  
           
@@ -60,6 +62,7 @@ class DatabaseService {
             storeMap['store_location_longitude'],
         _storesImageColumnName: storeMap['store_image'],
         _storesReviewColumnName: storeMap['store_review'],
+        _storeDescriptionColumnName: storeMap['store_description'],
       });
       return true;
     } else {

@@ -342,7 +342,7 @@ class SingleStoreView extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'overview of the store what it offers and any features.',
+                    storeModel.store_description,
                     style: TextStyle(fontSize: 13, height: 1.2),
                   ),
                 ],
