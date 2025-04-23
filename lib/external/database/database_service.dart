@@ -58,11 +58,11 @@ class DatabaseService {
         _storesIdColumnName: storeMap['store_id'],
         _storesNameColumnName: storeMap['store_name'],
         _store_location_latitudeColumnName: storeMap['store_location_latitude'],
+        _storeDescriptionColumnName: storeMap['store_description'],
         _store_location_longitudeColumnName:
             storeMap['store_location_longitude'],
         _storesImageColumnName: storeMap['store_image'],
         _storesReviewColumnName: storeMap['store_review'],
-        _storeDescriptionColumnName: storeMap['store_description'],
       });
       return true;
     } else {
