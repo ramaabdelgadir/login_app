@@ -184,7 +184,7 @@ class ProfilePageState extends State<ProfilePage> {
                                           fit: BoxFit.cover,
                                         )
                                         : Image.network(
-                                          "${AppData.SERVER_URL}/${widget.studentData.profile_pic_path}?timestamp=${DateTime.now().millisecondsSinceEpoch}",
+                                          "${AppData.SERVER_URL}/${widget.studentData.profile_pic_path?? "DEFAULT_PROFILE_IMAGE"}?timestamp=${DateTime.now().millisecondsSinceEpoch}",
                                           height: 100,
                                           width: 100,
                                           fit: BoxFit.cover,
