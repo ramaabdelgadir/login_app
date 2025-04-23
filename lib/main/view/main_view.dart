@@ -75,6 +75,7 @@ class _MainViewState extends State<MainView> {
             child: Image.asset('assets/images/logo.png', height: 50),
           ),
         ],
+        leading: Container(),
       ),
 
       body:
