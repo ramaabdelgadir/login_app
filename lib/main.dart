@@ -5,6 +5,7 @@ import 'package:login_app/student/views/profile_view.dart';
 import 'package:login_app/student/views/signup_view.dart';
 import 'package:login_app/splash.dart';
 import 'package:geolocator/geolocator.dart';
+import 'dart:io';
 
 Future<void> requestLocationPermission() async {
   LocationPermission permission = await Geolocator.checkPermission();
@@ -22,8 +23,9 @@ Future<void> requestLocationPermission() async {
 }
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await requestLocationPermission(); //
+  //WidgetsFlutterBinding.ensureInitialized();
+  //await requestLocationPermission(); //
+
   runApp(const MyApp());
 }
 

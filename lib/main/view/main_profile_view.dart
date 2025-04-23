@@ -9,31 +9,26 @@ import 'package:login_app/student/views/profile_view.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
-
 class MainProfileView extends StatelessWidget {
   final MainProfileBloc mainProfileBloc = MainProfileBloc();
   @override
   Widget build(BuildContext context) {
     mainProfileBloc.add(MainProfileGetDataEvent());
     return BlocConsumer<MainProfileBloc, MainProfileState>(
-            bloc: mainProfileBloc,
-            builder: (context, state) {
-              switch (state.runtimeType) {
-                case MainProfileGetDataLoadingState:
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          CustomLoading()
-                          
-                        ],
-                        );
+      bloc: mainProfileBloc,
+      builder: (context, state) {
+        switch (state.runtimeType) {
+          case MainProfileGetDataLoadingState:
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [CustomLoading()],
+            );
 
-
-                case MainProfileGetDataSuccessState:
-                state = state as MainProfileGetDataSuccessState;
-                final studentData = state.studentData;
-                  return Column(
+          case MainProfileGetDataSuccessState:
+            state = state as MainProfileGetDataSuccessState;
+            final studentData = state.studentData;
+            return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -53,42 +48,40 @@ class MainProfileView extends StatelessWidget {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(50),
                         child: Image.network(
-                          "${AppData.SERVER_URL}/photos/profile_pics/${studentData.profile_pic_path == null ? "DEFAULT_PROFILE_IMAGE.jpg" : studentData.profile_pic_path}",
+                          "${AppData.SERVER_URL}/${studentData.profile_pic_path}",
                           height: 80,
                           width: 80,
                           fit: BoxFit.cover,
                         ),
                       ),
                       const SizedBox(height: 15),
-                
+
                       // Name and Email text
                       Text(
                         studentData.name,
                         textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       const SizedBox(height: 10),
-                      Text(
-                        studentData.email,
-                        style: TextStyle(fontSize: 16),
-                      ),
-                
+                      Text(studentData.email, style: TextStyle(fontSize: 16)),
+
                       const SizedBox(height: 20),
                       // Profile button
                       ElevatedButton(
                         onPressed: () async {
-                        
-                            final result = await Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder:
-                                    (context) => ProfilePage(
-                                      studentData: studentData,
-                                    ),
-                              ),
-                            );
-                            print(result);
-                            if (result == true) {
-                                  mainProfileBloc.add(MainProfileGetDataEvent());
+                          final result = await Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder:
+                                  (context) =>
+                                      ProfilePage(studentData: studentData),
+                            ),
+                          );
+                          print(result);
+                          if (result == true) {
+                            mainProfileBloc.add(MainProfileGetDataEvent());
                           }
                         },
                         style: ElevatedButton.styleFrom(
@@ -104,43 +97,40 @@ class MainProfileView extends StatelessWidget {
                       ),
                     ],
                   ),
-                )
-                ]
-                );
+                ),
+              ],
+            );
 
-                case MainProfileGetDataFailedState:
-                return Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-          children: [Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text("an Error Occure"),
-            ],
-          )
-          ],
-          );
+          case MainProfileGetDataFailedState:
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [Text("an Error Occure")],
+                ),
+              ],
+            );
           default:
             return Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CustomLoading()
-                            
-                          ],
-                          );
-              }
-            },
-            listener: (context, state) {
-               switch(state.runtimeType){
-                    case MainProfileGetDataFailedState:{
-                      state = state as MainProfileGetDataFailedState;
-                        showTopSnackBar(
-                          Overlay.of(context),
-                          CustomSnackBar.error(message:state.errorMessage),
-                        );
-                    }
-                  }
-            },
-          );
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [CustomLoading()],
+            );
+        }
+      },
+      listener: (context, state) {
+        switch (state.runtimeType) {
+          case MainProfileGetDataFailedState:
+            {
+              state = state as MainProfileGetDataFailedState;
+              showTopSnackBar(
+                Overlay.of(context),
+                CustomSnackBar.error(message: state.errorMessage),
+              );
+            }
+        }
+      },
+    );
   }
 }

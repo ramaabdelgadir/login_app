@@ -184,7 +184,7 @@ class ProfilePageState extends State<ProfilePage> {
                                           fit: BoxFit.cover,
                                         )
                                         : Image.network(
-                                          "${AppData.SERVER_URL}/photos/profile_pics/${widget.studentData.profile_pic_path == null ? "DEFAULT_PROFILE_IMAGE.jpg" : widget.studentData.profile_pic_path}",
+                                          "${AppData.SERVER_URL}/${widget.studentData.profile_pic_path}",
                                           height: 100,
                                           width: 100,
                                           fit: BoxFit.cover,
@@ -544,9 +544,11 @@ class ProfilePageState extends State<ProfilePage> {
                             ),
                           ],
                         ),
-                          const SizedBox(height: 8),
+                        const SizedBox(height: 8),
 
-                        Row(children: [Expanded(
+                        Row(
+                          children: [
+                            Expanded(
                               flex: 3,
                               child: ElevatedButton(
                                 onPressed: () {
@@ -566,7 +568,9 @@ class ProfilePageState extends State<ProfilePage> {
                                   ),
                                 ),
                               ),
-                            ),],)
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                   ),

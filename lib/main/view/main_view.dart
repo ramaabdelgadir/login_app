@@ -12,25 +12,30 @@ import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:login_app/external/app_data.dart';
 
 class MainView extends StatefulWidget {
-  const MainView({super.key});
-
+  MainView({super.key, required this.firsttime});
+  bool firsttime;
   @override
   State<MainView> createState() => _MainViewState();
 }
 
 class _MainViewState extends State<MainView> {
   int currentPageIndex = 1;
+  int build_counter = 0;
 
   List<String> appBarText = ["Favorite", "Stores", "Profile"];
 
   @override
   Widget build(BuildContext context) {
+    build_counter++;
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       bottomNavigationBar: BottomNavigationBar(
         onTap: (value) {
           setState(() {
             currentPageIndex = value;
+            if (build_counter > 0 && widget.firsttime) {
+              widget.firsttime = false;
+            }
           });
         },
         currentIndex: currentPageIndex,
@@ -72,12 +77,12 @@ class _MainViewState extends State<MainView> {
         ],
       ),
 
-      body: switch (currentPageIndex) {
-        0 => FavoStoresView(),
-        1 => StoresView(),
-        2 => MainProfileView(),
-        _ => StoresView(),
-      },
+      body:
+          [
+            FavoStoresView(),
+            StoresView(firsttime: widget.firsttime),
+            MainProfileView(),
+          ][currentPageIndex],
     );
   }
 }

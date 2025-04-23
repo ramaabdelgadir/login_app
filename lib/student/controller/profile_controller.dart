@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:login_app/external/database/database_service.dart';
 import 'package:login_app/student/controller/service/bloc/student_bloc.dart';
 import 'package:login_app/external/model/student_model.dart';
 import 'package:login_app/external/theme/app_colors.dart';
@@ -51,8 +52,11 @@ class ProfileController {
   }
 
   void logout(BuildContext context) async {
+    DatabaseService _databaseService = DatabaseService.instance;
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove('token');
+    await _databaseService.deleteAllStore();
+
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (context) => LoginPage()),
       (Route<dynamic> route) => false,

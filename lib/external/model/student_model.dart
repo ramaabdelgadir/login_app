@@ -28,12 +28,11 @@ class StudentModel {
       student_id: data['student_id'],
     );
     if (data['gender'] != null)
-      studentModel.gender = data['gender']==0?"Male":"Female";
+      studentModel.gender = data['gender'] == 0 ? "Male" : "Female";
 
-    if (data['level'] != null)
-      studentModel.level = data['level'];
+    if (data['level'] != null) studentModel.level = int.parse(data['level']);
 
-    if(data['profile_pic_path'] != null)
+    if (data['profile_pic_path'] != null)
       studentModel.profile_pic_path = data['profile_pic_path'];
     return studentModel;
   }
@@ -67,7 +66,7 @@ class StudentModel {
     int student_id,
     int? level,
     int? gender,
-    String profile_pic_path
+    String profile_pic_path,
   ) {
     final Map<String, dynamic> data = {
       "email": email,
@@ -80,25 +79,15 @@ class StudentModel {
 
     if (gender != null) data['gender'] = gender;
 
- 
-
     final String request = json.encode(data);
 
     return request;
   }
 
-  static String loginRequest(
-    String email,
-    String password,
-  ) {
-    final Map<String, dynamic> data = {
-      "email": email,
-      "password": password,
-    };
+  static String loginRequest(String email, String password) {
+    final Map<String, dynamic> data = {"email": email, "password": password};
     final String request = json.encode(data);
 
     return request;
   }
-
-
 }

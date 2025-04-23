@@ -12,24 +12,23 @@ import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class StoresView extends StatelessWidget {
   final StoresBloc storesBloc = StoresBloc();
+  StoresView({required this.firsttime});
+  final bool firsttime;
   @override
   Widget build(BuildContext context) {
-    storesBloc.add(StoresGetDataEvent());
+    storesBloc.add(StoresGetDataEvent(firsttime: firsttime));
     return BlocBuilder<StoresBloc, StoresState>(
       bloc: storesBloc,
       builder: (context, state) {
-        switch(state.runtimeType){
+        switch (state.runtimeType) {
           case StoresGetDataLoadingState:
             return Column(
-               mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                CustomLoading(),
-              ],
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [CustomLoading()],
             );
           case StoresGetDataSuccessState:
-           state = state as StoresGetDataSuccessState;
-           AppData.allStores = state.storesList;
-            
+            state = state as StoresGetDataSuccessState;
+            AppData.allStores = state.storesList;
 
             return Container(
               padding: EdgeInsets.symmetric(horizontal: 12),
@@ -47,43 +46,42 @@ class StoresView extends StatelessWidget {
                     ),
                     itemBuilder: (context, i) {
                       return InkWell(
-                        onTap: () async{
+                        onTap: () async {
                           await Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) => SingleStoreView(storeModel: AppData.allStores![i],),
+                              builder:
+                                  (context) => SingleStoreView(
+                                    storeModel: AppData.allStores![i],
+                                  ),
                             ),
                           );
-                          storesBloc.add(StoresGetDataEvent());
-                
+                          storesBloc.add(
+                            StoresGetDataEvent(firsttime: firsttime),
+                          );
                         },
-                        child: CustomStoreCard(storeModel:AppData.allStores![i]),
+                        child: CustomStoreCard(
+                          storeModel: AppData.allStores![i],
+                        ),
                       );
                     },
                   ),
                 ],
               ),
             );
-            case StoresGetDataFailedState:
+          case StoresGetDataFailedState:
             return Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          CustomLoading()
-                          
-                        ],
-                        );
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [CustomLoading()],
+            );
           default:
-          return Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          CustomLoading()
-                          
-                        ],
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [CustomLoading()],
             );
         }
       },
     );
   }
 }
-
